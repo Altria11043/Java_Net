@@ -20,11 +20,11 @@ import java.net.SocketException;
  */
 public class TalkSend implements Runnable{
     // 1. 使用DatagramSocket 指定端口, 创建发送端
-    DatagramSocket send = null;
+    private DatagramSocket send = null;
     // 窗口输入
-    BufferedReader reader = null;
+    private BufferedReader reader = null;
 
-    InetSocketAddress address = null;
+    private InetSocketAddress address = null;
 
     public TalkSend(int port, String ToIP, int ToPort){
         try {
@@ -39,14 +39,15 @@ public class TalkSend implements Runnable{
     @Override
     public void run() {
         while(true){
+            String data;
             try {
                 // 2. 准备数据, 转换成字节数组
-                String data = reader.readLine();
+                data = reader.readLine();
                 byte[] datas = data.getBytes();
                 // 3. 封装成DatagramPacket包裹, 需要指定目的地
                 DatagramPacket packet = new DatagramPacket(datas, 0, datas.length, address);
                 // 4. 发送包裹send(DatagramPacket p)4. 发送包裹send(DatagramPacket p)
-                send.receive(packet);
+                send.send(packet);
                 if (data.equals("bye")){
                     break;
                 }
@@ -54,5 +55,7 @@ public class TalkSend implements Runnable{
                 e.printStackTrace();
             }
         }
+        // 释放资源
+        send.close();
     }
 }
