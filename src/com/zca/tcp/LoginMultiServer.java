@@ -16,18 +16,20 @@ import java.net.Socket;
 public class LoginMultiServer {
     public static void main(String[] args) throws IOException {
         ServerSocket server = new ServerSocket(8888);
-        Socket client = server.accept();
         boolean flag = true;
+        int num = 0;
         while(flag){
+            Socket client = server.accept();
+            System.out.println((++num) + "个客户端连接服务器");
             new Thread(new TestChannel(client)).start();
         }
         server.close();
     }
 
     static class TestChannel implements Runnable{
-        Socket client;
-        DataInputStream dis;
-        DataOutputStream dos;
+        private Socket client;
+        private DataInputStream dis;
+        private DataOutputStream dos;
         public TestChannel(Socket client){
             this.client = client;
             try {
@@ -47,7 +49,7 @@ public class LoginMultiServer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return datas;
+            return null;
         }
 
         // 发送数据
